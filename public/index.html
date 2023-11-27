@@ -8,34 +8,71 @@
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
     <meta name="theme-color" content="#000000" />
-    <!--
-      manifest.json provides metadata used when your web app is added to the
-      homescreen on Android. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
+    <style>
+      .kanban-board {
+        display: flex;
+        gap: 10px;
+      }
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
+      .kanban-column {
+        flex: 1;
+        border: 1px solid #ddd;
+        padding: 10px;
+      }
+
+      .kanban-card {
+        background: #f8f8f8;
+        border: 1px solid #ccc;
+        margin-bottom: 8px;
+        padding: 8px;
+        cursor: pointer;
+      }
+    </style>
     <title>Shiptivitas</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
+    <!-- Kanban board container -->
+    <div class="kanban-board">
+      <!-- To Do column -->
+      <div class="kanban-column" id="todo-column">
+        <h3>To Do</h3>
+        <div class="kanban-card" draggable="true" id="task-1">
+          Task 1
+        </div>
+      </div>
+      <!-- In Progress column -->
+      <div class="kanban-column" id="in-progress-column">
+        <h3>In Progress</h3>
+      </div>
+      <!-- Complete column -->
+      <div class="kanban-column" id="complete-column">
+        <h3>Complete</h3>
+      </div>
+    </div>
+  </div>
+  <script>
+     // Enable drag-and-drop functionality
+    const kanbanBoard = document.querySelector('.kanban-board');
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+    kanbanBoard.addEventListener('dragstart', (e) => {
+      e.dataTransfer.setData('text/plain', e.target.id);
+    });
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
+    kanbanBoard.addEventListener('dragover', (e) => {
+      e.preventDefault();
+    });
+
+    kanbanBoard.addEventListener('drop', (e) => {
+      e.preventDefault();
+      const cardId = e.dataTransfer.getData('text/plain');
+      const draggedCard = document.getElementById(cardId);
+      const columnId = e.target.closest('.kanban-column').id;
+
+      // Move the card to the new column
+      document.getElementById(columnId).appendChild(draggedCard);
+    });
+  </script>
   </body>
 </html>
